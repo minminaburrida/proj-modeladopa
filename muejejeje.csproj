@@ -7,8 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel" Version="6.2.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
     <PackageReference Include="MySql.Data" Version="8.2.0" />
-    <PackageReference Include="NewtonSoft.Json" Version="13.0.3" />
-  </ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+</ItemGroup>
+
+
 
 </Project>

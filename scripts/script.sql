@@ -1,3 +1,6 @@
+-- DB engine: MySQL
+
+
 -- En caso de bugiarse, runear uno por uno
 create database ibi;
 use ibi;

@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using Google.Protobuf.WellKnownTypes;
+
+using SqlConnection;
 namespace Habitaciones
 {
     public class Habitacion
@@ -19,16 +21,12 @@ namespace Habitaciones
     public class HabitacionController
     {
         private static HabitacionController controller = new HabitacionController();
-        private MySqlConnection conexion;
-        // private readonly string query = "";
-        public HabitacionController()
-        { this.conexion = new MySqlConnection("Server=localhost;Database=ibi;User Id=root;Password=;"); }
         public List<Habitacion> GetFromDataBase(bool filtrado = false, string estado = "")
         {
-            conexion.Open();
+            DbConnection.Instance.Open();
             // QuerySet para jalar las habitaciones
             MySqlCommand QuerySet = new MySqlCommand("SELECT * FROM habitaciones" +
-                                    (filtrado ? $"where estado = '{estado}'" : ""), conexion);
+                                    (filtrado ? $"where estado = '{estado}'" : ""), DbConnection.Instance);
             // Lectura de resultados
             using (MySqlDataReader lector = QuerySet.ExecuteReader())
             {
@@ -47,7 +45,7 @@ namespace Habitaciones
 
                     habitaciones.Add(habitacion);
                 }
-                conexion.Close();
+                DbConnection.Instance.Close();
                 return habitaciones;
 
                 // Si no se solicita JSON, imprime los resultados en la consola
@@ -55,12 +53,7 @@ namespace Habitaciones
             }
         }
         public void editar(string id, string estado)
-        {
-            conexion.Open();
-            MySqlCommand QuerySet = new MySqlCommand($"update habitaciones set estado='{estado}' where id = {id}", conexion);
-            QuerySet.ExecuteNonQuery();
-            conexion.Close();
-        }
+        {DbConnection.Execute($"update habitaciones set estado='{estado}' where id = {id}");}
 
         public static async Task Lista(HttpContext context)
         {
