@@ -88,6 +88,20 @@ namespace Auth
             // Simplemente devolvemos true para este ejemplo
             return true;
         }
+        private static DateTime GetLastLoginTime(string token)
+        {
+            // Implement logic to retrieve the last login time from your database
+            // Replace the following line with your actual database query
+            DateTime lastLoginTime = DateTime.Now; // Replace with actual logic to retrieve last login time
+
+            return lastLoginTime;
+        }
+        private static void UpdateTokenInDatabase(string oldToken, string newToken)
+        {
+            // Implement logic to update the token in your database
+            // Replace the following line with your actual database update logic
+            DbConnection.Execute($"UPDATE usuarios SET token = '{newToken}' WHERE token = '{oldToken}'");
+        }
 
         public static async Task RefreshToken(HttpContext context)
         {
@@ -97,11 +111,11 @@ namespace Auth
             // Verificar si el token existe
             if (!string.IsNullOrEmpty(token))
             {
-                
+
                 // Realizar la lógica para validar el token en tu base de datos
-                var usuario = DbConnection.ExecuteAndGetResult("SELECT * FROM usuarios WHERE token = "+token);
-                
-                if (tokenIsValid)
+                var usuario = DbConnection.ExecuteAndGetResult("SELECT * FROM usuarios WHERE token = " + token);
+
+                if (true)
                 {
                     // Obtener la información de tiempo de la base de datos o cualquier otra fuente
                     DateTime lastLoginTime = GetLastLoginTime(token);
@@ -134,6 +148,15 @@ namespace Auth
                 // El token no está presente en el encabezado, puedes manejar esto según tus necesidades
             }
         }
+        private static string GenerateNewToken()
+        {
+            // Implement logic to generate a new token, such as using JWT or any other secure method
+            // Replace the following line with your actual token generation logic
+            string newToken = Guid.NewGuid().ToString(); // Replace with actual token generation logic
+
+            return newToken;
+        }
+
         public static async Task Login(HttpContext context)
         {
             try

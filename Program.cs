@@ -1,8 +1,21 @@
 using Habitaciones;
 using Auth;
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+        policy =>
+        {
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        });
+});
+
+
+var app = builder.Build();
+app.UseCors(MyAllowSpecificOrigins); // Add this line
 app.MapGet("/", () => "Hello World!");
 
 app.MapGet("/habitaciones/", context => HabitacionController.Lista(context));
