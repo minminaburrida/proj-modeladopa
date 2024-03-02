@@ -21,5 +21,6 @@ app.MapGet("/", () => "Hello World!");
 app.MapGet("/habitaciones/", context => HabitacionController.Lista(context));
 app.MapGet("/habitaciones/edit", context => HabitacionController.Edit(context));
 app.MapPost("/auth/login", async context => await UsuarioController.Login(context));
+app.MapPost("/auth/iam", async context => UsuarioController.IAmIve(context));
 
 app.Run();

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using MySql.Data.MySqlClient;
 using SqlConnection;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Auth
 {
@@ -103,6 +104,37 @@ namespace Auth
             DbConnection.Execute($"UPDATE usuarios SET token = '{newToken}' WHERE token = '{oldToken}'");
         }
 
+
+        public static string userData(string username)
+        {
+            try
+            {
+                dynamic usuario = DbConnection.ExecuteAndGetResult("SELECT * FROM usuarios WHERE username = '" + username + "'");
+                Console.WriteLine("Resultado de la consulta SQL: " + JsonConvert.SerializeObject(usuario));
+
+                // Verifica si se encontró un usuario
+                if (usuario != null)
+                {
+                    // Convierte el objeto a formato JSON
+                    string jsonUsuario = JsonConvert.SerializeObject(usuario);
+
+                    // Devuelve el JSON
+                    return jsonUsuario;
+                }
+                else
+                {
+                    // En caso de que no se encuentre el usuario, puedes devolver un JSON vacío o un mensaje de error
+                    return "{}";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones si ocurre algún error
+                Console.WriteLine("Error al obtener datos del usuario: " + ex.Message);
+                return "{}"; // Puedes personalizar este retorno según tus necesidades
+            }
+        }
+
         public static async Task RefreshToken(HttpContext context)
         {
             // Obtener el token del encabezado de autorización
@@ -192,8 +224,26 @@ namespace Auth
                 }));
             }
         }
+        public static string IAmIve(HttpContext context)
+        {
+            try
+            {
+                var form = context.Request.Form;
 
-
-
+                var data = form["username"];
+                context.Response.WriteAsync(JsonConvert.SerializeObject(userData(data)));
+            }
+            catch (Exception ex)
+            {
+                context.Response.StatusCode = 500;
+                context.Response.ContentType = "application/json";
+                context.Response.WriteAsync(JsonConvert.SerializeObject(new
+                {
+                    Message = "Error en el servidor",
+                    Details = ex.Message
+                }));
+            }
+            return "'";
+        }
     }
 }
